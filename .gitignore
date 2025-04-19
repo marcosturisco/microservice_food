@@ -1,0 +1,7 @@
+/shelf/
+/.idea/
+/target/
+/gateway/.mvn/
+/pagamentos/.mvn/
+/pedidos/.mvn/
+/server/.mvn/

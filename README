@@ -1,0 +1,82 @@
+📚 Project Overview
+This project demonstrates a microservices architecture using Spring Boot, Spring Cloud, Eureka, Kubernetes,
+Feign, and an API Gateway. It covers essential concepts such as service discovery, load balancing,
+circuit breaker, and auto-scaling.
+
+🚀 Features Implemented
+🧭 Service Discovery with Eureka
+Verified that services (Gateway, Payments, and Orders) are registered and active in Eureka, each with their
+respective ports.
+
+Configured multiple Eureka server replicas for high availability using Kubernetes StatefulSet.
+
+Set up ConfigMap and environment variables like eureka.instance.instance-id to ensure all replicas are properly
+registered in Eureka.
+
+Highlighted the difference between accessing services directly via Eureka vs. through the API Gateway.
+
+🌐 API Gateway
+Integrated an API Gateway as the single entry point for the application.
+
+Configured services to be accessed via the Gateway by service name, instead of static IPs or ports.
+
+Created an endpoint that returns the port number of the instance handling the request.
+
+Enabled Gateway integration with Eureka for load-balanced routing between available service instances.
+
+This approach increases the horizontal scalability of the application by supporting multiple dynamic instances.
+
+🔄 Microservices Communication
+Synchronous Communication
+Used Spring Cloud OpenFeign to implement direct, synchronous communication between microservices.
+
+Implemented a PUT request in the Payments service to notify the Orders service once an order is paid.
+
+Asynchronous Communication
+Explained use cases for asynchronous communication when synchronous responses are not required.
+
+🛡️ Fault Tolerance
+Implemented Circuit Breaker witch apply the resilience pattern, to halt requests after repeated
+communication failures.
+
+Set up Fallback methods to gracefully handle service outages and avoid cascading failures.
+
+🔍 Key Concepts
+Service Discovery: Dynamically resolving service instances by name rather than static IP or port.
+
+Service Registry: A centralized server (Eureka Server) that maintains a catalog of services and their instances.
+
+Self-Registration: Services register themselves as Eureka Clients on startup.
+
+🧰 Configuring Maven Wrapper (mvnw)
+To enable the Maven Wrapper in this project, navigate to the directory containing the pom.xml and run:
+$ mvn -N io.takari:maven:wrapper
+
+This command generates the mvnw, mvnw.cmd, and .mvn/wrapper/ files, allowing consistent Maven builds across
+environments—without requiring Maven to be installed locally.
+
+To startup a new instance of an spring boot application, navigate to the directory containing the mvnw file and run:
+$ .\mvnw spring-boot:run
+
+#Showcases:
+1. CREATE AN ORDER
+{
+	"itens": [
+		{
+			"quantidade": 1,
+			"descricao": "Lapis"
+		}
+	]
+}
+
+2. CREATE A PAYMENT
+{
+	"valor": 10,
+	"nome": "Marcos",
+	"numero": "123",
+	"expiracao": "05/25",
+	"codigo": "1",
+	"status": "CRIADO",
+	"formaDePagamentoId": 1,
+	"pedidoId": 1
+}
