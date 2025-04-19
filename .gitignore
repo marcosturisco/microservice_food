@@ -5,3 +5,11 @@
 /pagamentos/.mvn/
 /pedidos/.mvn/
 /server/.mvn/
+/gateway/mvnw
+/pagamentos/mvnw
+/pedidos/mvnw
+/server/mvnw
+/gateway/mvnw.cmd
+/pagamentos/mvnw.cmd
+/pedidos/mvnw.cmd
+/server/mvnw.cmd
