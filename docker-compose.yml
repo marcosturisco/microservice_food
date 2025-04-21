@@ -1,20 +1,90 @@
-version: "3.6"
+version: "3.8"
+
+networks:
+  rabbitmq_net:
+    driver: bridge
 
 services:
-  rabbitmq:
+  rabbit1:
     image: rabbitmq:3.10-management
-    container_name: rabbitmq
-    restart: always
+    hostname: rabbit1
+    container_name: rabbit1
+    networks:
+      - rabbitmq_net
     ports:
-      - 5672:5672
-      - 15672:15672
-    volumes:
-      - ./dados:/var/lib/rabbitmq/
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      RABBITMQ_ERLANG_COOKIE: "food_secret"
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbit1_data:/var/lib/rabbitmq
     command: >
       bash -c "
         rabbitmq-plugins enable --offline rabbitmq_shovel rabbitmq_shovel_management &&
         rabbitmq-server
       "
+
+  rabbit2:
+    image: rabbitmq:3.10-management
+    hostname: rabbit2
+    container_name: rabbit2
+    networks:
+      - rabbitmq_net
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "food_secret"
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbit2_data:/var/lib/rabbitmq
+    depends_on:
+      - rabbit1
+    command: >
+      bash -c "
+        rm -rf /var/lib/rabbitmq/mnesia/* &&
+        rabbitmq-server -detached &&
+        sleep 10 &&
+        rabbitmqctl stop_app &&
+        rabbitmqctl reset &&
+        rabbitmqctl join_cluster rabbit@rabbit1 &&
+        rabbitmqctl start_app &&
+        tail -f /dev/null
+      "
+
+  rabbit3:
+    image: rabbitmq:3.10-management
+    hostname: rabbit3
+    container_name: rabbit3
+    networks:
+      - rabbitmq_net
+    ports:
+      - "5674:5672"
+      - "15674:15672"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "food_secret"
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbit3_data:/var/lib/rabbitmq
+    depends_on:
+      - rabbit1
+    command: >
+      bash -c "
+        rm -rf /var/lib/rabbitmq/mnesia/* &&
+        rabbitmq-server -detached &&
+        sleep 10 &&
+        rabbitmqctl stop_app &&
+        rabbitmqctl reset &&
+        rabbitmqctl join_cluster rabbit@rabbit1 &&
+        rabbitmqctl start_app &&
+        tail -f /dev/null
+      "
+
+volumes:
+  rabbit1_data:
+  rabbit2_data:
+  rabbit3_data:

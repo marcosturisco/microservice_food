@@ -1,0 +1,59 @@
+### Cluster and High Availability with RabbitMQ
+
+- Use the **shovel plugin** to move messages from a dead letter queue (DLQ) to another destination queue.
+- Deploy multiple RabbitMQ instances and group them into a **cluster** to enable coordinated message handling.
+- Configure **high availability (HA) policies** to replicate queues and messages across nodes. This ensures
+  fault tolerance in case one of the instances becomes unavailable.
+
+### Creating the Cluster and Replicating Messages
+
+1. Create the Docker Network
+First, we create a Docker network so containers can communicate with and "see" each other:
+
+$ docker network create food
+
+2. Start RabbitMQ Instances
+Next, we launch three RabbitMQ instances using Docker containers, mapping each to different local ports.
+We set the same RABBITMQ_ERLANG_COOKIE environment variable in all instances to allow communication
+and message mirroring between the nodes.
+
+$ docker run -d --rm --net food --hostname rabbit1 --name rabbit1 -p 8085:15672 \
+  -e RABBITMQ_ERLANG_COOKIE=alura_secret rabbitmq:3.10-management
+
+$ docker run -d --rm --net food --hostname rabbit2 --name rabbit2 -p 8086:15672 \
+  -e RABBITMQ_ERLANG_COOKIE=alura_secret rabbitmq:3.10-management
+
+$ docker run -d --rm --net food --hostname rabbit3 --name rabbit3 -p 8087:15672 \
+  -e RABBITMQ_ERLANG_COOKIE=alura_secret rabbitmq:3.10-management
+
+3. Join Rabbit2 and Rabbit3 to the Cluster
+After launching the containers, we must stop and reset the second and third nodes (rabbit2 and rabbit3),
+then ask them to join the rabbit1 cluster:
+
+$ docker exec -it rabbit2 rabbitmqctl stop_app
+$ docker exec -it rabbit2 rabbitmqctl reset
+$ docker exec -it rabbit2 rabbitmqctl join_cluster rabbit@rabbit1
+$ docker exec -it rabbit2 rabbitmqctl start_app
+
+$ docker exec -it rabbit3 rabbitmqctl stop_app
+$ docker exec -it rabbit3 rabbitmqctl reset
+$ docker exec -it rabbit3 rabbitmqctl join_cluster rabbit@rabbit1
+$ docker exec -it rabbit3 rabbitmqctl start_app
+
+4. Configure High Availability Policy
+Go to http://localhost:8085 and open the Admin tab in the RabbitMQ UI.
+There, add a high availability policy using the pattern .* and set the mode to all,
+to replicate queues across all nodes in the cluster.
+
+- add / update a policy
+$ Name: ha
+$ Pattern: .*
+$ Apply to: Exchanges and queues
+$ Definition: ha-mode = all
+$ Click add button
+
+5. Test Replication
+Now you can create queues and publish messages. Then stop one of the nodes and verify that both queues
+and messages were successfully replicated and kept in memory. This confirms high availability
+without requiring message persistence.
+
