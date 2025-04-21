@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class PagamentoListener {
 
-    @RabbitListener(queues = "pagamento.concluido")
+    @RabbitListener(queues = "pagamentos.detalhes-pedido")
     public void recebeMensagem(PagamentoDto dto) {
         String mensagem = """
                 ID: %s
