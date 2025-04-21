@@ -48,6 +48,8 @@ by RabbitTemplate.
 
 Spring AMQP provides the Jackson2JsonMessageConverter for handling JSON serialization
 
+RabbitMQ Default port: 15672
+
 +-----------+        +------------+        +--------+        +-------------+
 | Publisher | -----> |  Exchange  | -----> | Queue  | -----> | Subscriber  |
 +-----------+        +------------+        +--------+        +-------------+
