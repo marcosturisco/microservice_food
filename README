@@ -75,7 +75,7 @@ $ .\mvnw spring-boot:run
 	"nome": "Marcos",
 	"numero": "123",
 	"expiracao": "05/25",
-	"codigo": "1",
+	"codigo": "123",
 	"status": "CRIADO",
 	"formaDePagamentoId": 1,
 	"pedidoId": 1

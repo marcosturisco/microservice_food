@@ -1,0 +1,33 @@
+my-spring-boot-project/
+├── README.md                # Visão geral do projeto (entrada principal)
+├── docs/
+│   ├── README-architecture.md     # Arquitetura do projeto
+│   ├── README-api.md              # Detalhes sobre a API REST
+│   ├── README-database.md         # Modelo de dados, estrutura do banco
+│   └── README-dev-guide.md        # Guia para desenvolvedores (setup, testes, etc)
+├── module-a/
+│   └── README.md                  # Explicação específica desse módulo
+├── module-b/
+│   └── README.md
+└── ...
+
+📌 O que colocar no README.md da raiz?
+Breve descrição do projeto
+
+Como subir localmente (ou link para o guia de dev)
+
+Link para os outros READMEs, algo assim:
+
+✅ Boas práticas
+Consistência nos nomes dos arquivos: prefira um padrão, como README-<assunto>.md, para facilitar a leitura e
+organização.
+
+Links relativos: sempre use caminhos relativos para facilitar navegação no GitHub/GitLab/etc.
+
+Separação por contexto: coloque arquivos dentro de pastas de módulos se eles forem específicos daquele escopo.
+
+Organize uma pasta /docs se tiver muitos arquivos de documentação. Evita poluir a raiz e já é um padrão reconhecido.
+
+✨ Extra: usar ferramentas como o MkDocs ou Docusaurus
+Se o projeto ficar ainda maior, você pode automatizar e melhorar a leitura da documentação usando ferramentas que
+geram sites de docs a partir dos arquivos Markdown.

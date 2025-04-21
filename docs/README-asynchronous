@@ -1,0 +1,58 @@
+## AMQP
+
+AMQP stands for Advanced Messaging Queue Protocol.
+It is the base protocol on which RabbitMQ was built.
+
+This protocol offers several advantages, such as reliable message queuing,
+flexible routing, transactions, security, and interoperability.
+
+In this protocol model, we have some key components.
+First, there's the **publisher**, which sends messages to an entity called the **exchange**.
+
+The **exchange**, based on programmable rules (its type and bindings), routes messages to queues.
+
+These queues are consumed by a **subscriber**, which subscribes to receive messages from the queue.
+
+One key feature of this protocol is that the **publisher never sends messages directly to a queue**.
+Messages are always sent to an exchange, which then routes or discards them based on its type.
+
+The spring-boot-starter-amqp dependency in the pom.xml, it already includes two underlying
+dependencies by default — a standard behavior when using Spring Boot starters
+
+## Messaging with RabbitTemplate
+
+The `RabbitTemplate` is a helper class that simplifies sending and receiving messages with RabbitMQ.
+It offers several methods to customize message conversion, default routing key or exchange,
+as well as response configurations for message consumption confirmation.
+
+## Consuming Messages with @RabbitListener
+
+To consume messages from a queue, the `spring-boot-starter-amqp` dependency provides the `@RabbitListener`
+annotation. It takes as a parameter an array of Strings representing the names of the queues to be consumed.
+
+As soon as the application starts, any method annotated with `@RabbitListener` will begin execution,
+and messages from the specified queue(s) will be consumed automatically.
+
+The method typically receives a parameter of type `Message`.
+The `@Payload` annotation indicates that the method parameter should receive the body of the message.
+This annotation is optional when the method has only one parameter.
+
+📦 Message Conversion
+When working with RabbitMQ in a Spring Boot application, the RabbitTemplate is the primary component used to
+send messages to the broker. By default, it uses the SimpleMessageConverter to handle message serialization
+and deserialization.
+
+However, in many real-world scenarios, you may need to send messages in different formats such as JSON or XML.
+To customize this behavior, you can set a different message converter using the setMessageConverter method provided
+by RabbitTemplate.
+
+Spring AMQP provides the Jackson2JsonMessageConverter for handling JSON serialization
+
++-----------+        +------------+        +--------+        +-------------+
+| Publisher | -----> |  Exchange  | -----> | Queue  | -----> | Subscriber  |
++-----------+        +------------+        +--------+        +-------------+
+
+# Installing RabbitMQ
+$ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.10-management
+
+# Access using 'guest' for the credential
