@@ -1,0 +1,45 @@
+Routing Patterns with Exchanges in RabbitMQ
+In RabbitMQ, a message is never sent directly to a queue. Instead, it is always routed through an exchange.
+The exchange is responsible for forwarding messages to one or more queues that are bound to it.
+When a message is sent without specifying an exchange, RabbitMQ automatically uses a default exchange behind the scenes.
+
+Types of Exchanges
+Direct: Commonly used when you want to send a message to a specific consumer. A routing key is used to help
+the exchange identify which queue should receive the message.
+
+Fanout: Broadcasts the message to all queues bound to the exchange, ignoring any routing key.
+To connect a queue to a fanout exchange, a binding must be created. The binding key defines the connection
+between the queue and the exchange.
+
+Headers: Less commonly used. It ignores the routing key and relies on message headers to determine
+which binding key should be matched for routing.
+
+Topic: Offers flexible routing by allowing binding keys to define patterns, similar to regular expressions.
+This enables routing to multiple consumers based on more dynamic matching rules.
+
+Practical Example
+Imagine a producer application named order. At some point, it needs to send messages to two consumers:
+
+Inventory: to check if the ordered items are available
+
+Finance: to verify if the customer has any pending issues
+
+Later, it will also need to notify a third consumer:
+
+Payment: to process the order payment
+
+Binding Key Configuration:
+Queues inventory and finance are bound to the exchange with the binding key: order.*
+
+The payment queue is bound to the exchange with the binding key: *.payment
+
+Routing Behavior:
+If order sends a message with the routing key order.created, both inventory and finance will receive it.
+
+If it sends a message with the routing key order.payment, all three consumers will receive it, since the
+routing key matches both binding patterns.
+
+Final Thoughts
+To make the most of RabbitMQ and ensure efficient communication between producers and consumers,
+it's crucial to understand and properly model the exchange types and routing strategies.
+This helps achieve better performance and scalability in event-driven systems.

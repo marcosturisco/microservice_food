@@ -37,8 +37,8 @@ public class PedidoAMQPConfiguration {
     }
 
     @Bean
-    public Binding binding(FanoutExchange fanoutExchange) {
-        return BindingBuilder.bind(filaDetalhesPedido()).to(fanoutExchange);
+    public Binding bindDetalhesPedido() {
+        return BindingBuilder.bind(filaDetalhesPedido()).to(fanoutExchange());
     }
 
     @Bean

@@ -1,0 +1,32 @@
+Error Handling, Retry Strategy, and Dead Letter Queues in RabbitMQ
+
+By default, when a message processing error occurs and no retry configuration is defined, RabbitMQ may enter a
+loop, repeatedly attempting to process the same message without success.
+
+To prevent this behavior, you can configure retry policies in the application.properties file using parameters such as:
+
+max-attempts
+initial-interval
+multiplier
+max-interval
+
+These properties control the number of retry attempts, the initial delay, the growth rate between attempts,
+and the maximum interval between retries.
+
+Dead Letter Queues and Exchanges
+A Dead Letter Queue (DLQ) and its corresponding Dead Letter Exchange (DLX) are mechanisms used to handle
+"dead" messages — those that could not be successfully processed. Instead of losing the message or halting the flow,
+the message is redirected to another queue for future processing or inspection.
+
+Quick Setup with QueueBuilder
+You can quickly configure a dead letter exchange in your queue setup using QueueBuilder.
+Simply pass the DLX name using the method:
+
+java
+Copy
+Edit
+QueueBuilder.durable("main.queue")
+            .withArgument("x-dead-letter-exchange", "dlx.exchange.name")
+            .build();
+
+This allows you to implement robust error handling and message recovery with minimal configuration.

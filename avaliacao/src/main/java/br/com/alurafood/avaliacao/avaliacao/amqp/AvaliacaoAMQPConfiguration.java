@@ -1,11 +1,6 @@
 package br.com.alurafood.avaliacao.avaliacao.amqp;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.ExchangeBuilder;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -35,6 +30,14 @@ public class AvaliacaoAMQPConfiguration {
     public Queue filaDetalhesAvaliacao() {
         return QueueBuilder
                 .nonDurable("pagamentos.detalhes-avaliacao")
+                .deadLetterExchange("pagamentos.dlx")
+                .build();
+    }
+
+    @Bean
+    public Queue filaDlqDetalhesAvaliacao() {
+        return QueueBuilder
+                .nonDurable("pagamentos.detalhes-avaliacao-dlx")
                 .build();
     }
 
@@ -46,10 +49,24 @@ public class AvaliacaoAMQPConfiguration {
     }
 
     @Bean
-    public Binding bindPagamentoPedido(FanoutExchange fanoutExchange) {
+    public FanoutExchange dlqExchange() {
+        return ExchangeBuilder
+                .fanoutExchange("pagamentos.dlx")
+                .build();
+    }
+
+    @Bean
+    public Binding bindPagamentoPedido() {
         return BindingBuilder
                 .bind(filaDetalhesAvaliacao())
                 .to(fanoutExchange());
+    }
+
+    @Bean
+    public Binding bindDlqPagamentoPedido() {
+        return BindingBuilder
+                .bind(filaDlqDetalhesAvaliacao())
+                .to(dlqExchange());
     }
 
     @Bean

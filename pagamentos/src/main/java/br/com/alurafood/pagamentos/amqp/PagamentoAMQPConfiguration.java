@@ -15,21 +15,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PagamentoAMQPConfiguration {
 
-//    @Bean
-//    public Queue criaFila() {
-//        return QueueBuilder.nonDurable("pagamento.concluido").build();
-//    }
-
-    @Bean
-    public RabbitAdmin criaRabbitAdmin(ConnectionFactory conn) {
-        return new RabbitAdmin(conn);
-    }
-
-    @Bean
-    public ApplicationListener<ApplicationReadyEvent> inicializaAdmin(RabbitAdmin rabbitAdmin) {
-        return event -> rabbitAdmin.initialize();
-    }
-
     @Bean
     public Jackson2JsonMessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
@@ -46,5 +31,15 @@ public class PagamentoAMQPConfiguration {
     @Bean
     public FanoutExchange fanoutExchange() {
         return new FanoutExchange("pagamentos.ex");
+    }
+
+    @Bean
+    public RabbitAdmin criaRabbitAdmin(ConnectionFactory conn) {
+        return new RabbitAdmin(conn);
+    }
+
+    @Bean
+    public ApplicationListener<ApplicationReadyEvent> inicializaAdmin(RabbitAdmin rabbitAdmin) {
+        return event -> rabbitAdmin.initialize();
     }
 }
