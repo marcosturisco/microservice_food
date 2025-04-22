@@ -57,3 +57,5 @@ Now you can create queues and publish messages. Then stop one of the nodes and v
 and messages were successfully replicated and kept in memory. This confirms high availability
 without requiring message persistence.
 
+- Stoping the cluster using the above command to clean up the volume as well
+$ docker-compose down -v
