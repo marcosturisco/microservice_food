@@ -18,8 +18,10 @@ services:
       RABBITMQ_ERLANG_COOKIE: "food_secret"
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbitmq_management load_definitions \"/etc/rabbitmq/definitions.json\""
     volumes:
       - rabbit1_data:/var/lib/rabbitmq
+      - ./rabbitmq-defs.json:/etc/rabbitmq/definitions.json
     command: >
       bash -c "
         rabbitmq-plugins enable --offline rabbitmq_shovel rabbitmq_shovel_management &&
@@ -45,9 +47,10 @@ services:
       - rabbit1
     command: >
       bash -c "
+        rabbitmq-plugins enable --offline rabbitmq_shovel rabbitmq_shovel_management &&
         rm -rf /var/lib/rabbitmq/mnesia/* &&
         rabbitmq-server -detached &&
-        sleep 10 &&
+        sleep 15 &&
         rabbitmqctl stop_app &&
         rabbitmqctl reset &&
         rabbitmqctl join_cluster rabbit@rabbit1 &&
@@ -74,9 +77,10 @@ services:
       - rabbit1
     command: >
       bash -c "
+        rabbitmq-plugins enable --offline rabbitmq_shovel rabbitmq_shovel_management &&
         rm -rf /var/lib/rabbitmq/mnesia/* &&
         rabbitmq-server -detached &&
-        sleep 10 &&
+        sleep 15 &&
         rabbitmqctl stop_app &&
         rabbitmqctl reset &&
         rabbitmqctl join_cluster rabbit@rabbit1 &&
